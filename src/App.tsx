@@ -1,25 +1,70 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from "react";
+import { useState } from "react";
+import "./App.css";
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Typography,
+  Card,
+  CardContent,
+  Grid
+} from "@mui/material";
+import { getData, GithubRepo } from "./api";
 
 function App() {
+  const [infoData, setData] = useState<GithubRepo[]>([]);
+
+  useEffect(() => {
+    getData().then((res) => {
+      setData(res);
+    });
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar
+        sx={{ bgcolor: "black"}}
+      >
+        <Toolbar>
+          <Typography variant="h6" color="white">
+            Репозитории пользователя KondrashinMikhail
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <Grid container spacing={2} style={{ marginTop: 50 }}
+        id="cards"
+        sx={{
+          mt: 6,
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "space-around"
+        }}>
+        {infoData.map((card) => (
+          <Grid item xs={6}>
+            <Card key={card.id} sx={{
+              backgroundColor: "black",
+              color: "white",
+              borderRadius: 5,
+              m: 5,
+            }}>
+              <CardContent>
+                <Typography variant="h5" component="div" textAlign="center"> {card.name} </Typography>
+                <Typography
+                  variant="body2"
+                  color="gray"
+                  textAlign="justify"
+                  gutterBottom>
+                  {card.description}
+                </Typography>
+              </CardContent>
+            </Card>
+          </Grid>
+        ))}
+
+      </Grid>
+    </Box>
   );
 }
 
